@@ -2,9 +2,9 @@ const Employee = require('../lib/employee');
 
 describe("Employee", () => {
     describe("constructor", () => {
-      it("should create an instance of employee, taking a name, an id number, an email address, and an office number as arguments", () => {
+      it("should create an instance of employee, taking a name, an id number, and an email address as arguments", () => {
        //arrange
-        const fred = new Employee(`Fred`, 37, `Fred@Fredmail.com`, `5D`);
+        const fred = new Employee(`Fred`, 37, `Fred@Fredmail.com`);
        //act
 
        //assert
@@ -15,7 +15,7 @@ describe("Employee", () => {
     describe("getName", () => {
       it("should return employee name", () => {
        //arrange
-       const fred = new Employee(`Fred`, 37, `Fred@Fredmail.com`, `5D`);
+       const fred = new Employee(`Fred`, 37, `Fred@Fredmail.com`);
        //act
        const name = fred.getName();
        //assert
@@ -26,7 +26,7 @@ describe("Employee", () => {
     describe("GetId", () => {
       it("should return employee ID", () => {
         //arrange
-        const fred = new Employee(`Fred`, 37, `Fred@Fredmail.com`, `5D`);
+        const fred = new Employee(`Fred`, 37, `Fred@Fredmail.com`);
         //act
         const id = fred.getId();
         //assert
@@ -37,7 +37,7 @@ describe("Employee", () => {
     describe("getEmail", () => {
         it("should return employee email", () => {
         //arrange
-        const fred = new Employee(`Fred`, 37, `Fred@Fredmail.com`, `5D`);
+        const fred = new Employee(`Fred`, 37, `Fred@Fredmail.com`);
         //act
         const email = fred.getEmail();
         //assert
@@ -48,7 +48,7 @@ describe("Employee", () => {
       describe("getRole", () => {
         it("should return 'Employee'", () => {
        //arrange
-       const fred = new Employee(`Fred`, 37, `Fred@Fredmail.com`, `5D`);
+       const fred = new Employee(`Fred`, 37, `Fred@Fredmail.com`);
        //act
        const role = fred.getRole();
        //assert
