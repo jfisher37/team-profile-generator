@@ -12,12 +12,12 @@ describe("Manager", () => {
       });
     });
 
-    describe("Office", () => {
+    describe("getOffice", () => {
         it("should return an office of '5D'", () => {
          //arrange
          const fred = new Manager(`Fred`, 37, `Fred@Fredmail.com`, `5D`);
          //act
-         const office = fred.office;
+         const office = fred.getOffice();
          //assert
          expect(office).toEqual(`5D`);
         });
