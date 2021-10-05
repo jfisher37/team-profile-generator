@@ -27,7 +27,8 @@ const htmlTop = `<!DOCTYPE html>
     <main>
     <ul id=card-area>`
 
-const htmlBottom = `/ul>
+const htmlBottom = `
+</ul>
 </main>
 </body>
 
@@ -88,59 +89,120 @@ const newEmployeeQs = [
     },
 ];
 
+const employees = [];
 
-
-function genDetails(data){
-
-    const cardTemplate = ` <li class="card" style="width: 18rem;">
-<div class="card-body">
-    <ul>
-        <li><h5 class="card-title">${data.name} (ID: ${data.id})</h5></li>
-        <li><h5 class="card-text">Role: ${data.role}</h5></li>
-        <li><a href="${data.email}">Email</a></li>`
-    
-   
-    fs.appendFile('./dist/team-profile.html', cardTemplate, (err) =>
-    {if (err) {console.log(err)}});
-
-    if (data.role === `Manager`){
-        inquirer
-        .prompt({
-            type: `input`,
-            message: `What's the manager's office number?`,
-            name: `office`,
-        })
-        .then((detail) => {
-            const nextTemp = `
-            <li><h5>Office Number: ${detail.office}</li></h5>
-            </ul>
-            </div>
-            </li>`
-            
-            fs.appendFile('./dist/team-profile.html', nextTemp, (err) =>
-    {if (err) {console.log(err)}});
-         }
-        )}
-
-    else if (data.role === `Engineer`){
-        genEngineer(response);
-    }
-    else if (data.role === `Intern`){
-        genIntern(response);
-    }
-
-    
-}
-const EngineerQ = {
-    type: `input`,
-    message: `What's the engineer's Github account?`,
-    name: `github`,
+function askNext() {
+    inquirer
+        .prompt(nextQ)
+        .then((response) => {
+            if (response.next === `Yes`) {
+                makeAnother();
+            }
+            else {
+                finishHtml();
+            }
+        }
+        )
 };
 
-const InternQ = {
-    type: `input`,
-    message: `What school does the intern go to?`,
-    name: `school`,
+function generateCards() {
+
+    employees.forEach(item => {
+        const cardTemplate = ` <li class="card" style="width: 18rem;">
+        <div class="card-body">
+            <ul>
+                <li><h5 class="card-title">${item.getName()} (ID: ${item.getId()})</h5></li>
+                <li><h5 class="card-text">Role: ${item.getRole()}</h5></li>
+                <li><a href="mailto:${item.getEmail()}">Email</a></li>`;
+
+        fs.appendFileSync('./dist/team-profile.html', cardTemplate);
+
+        if (item.getRole() === `Manager`) {
+            const nextTemp = `
+             <li><h5>Office Number: ${item.getOffice()}</h5></li>
+             </ul>
+             </div>
+             </li>`;
+
+            fs.appendFileSync('./dist/team-profile.html', nextTemp);
+        }
+        else if (item.getRole() === `Engineer`) {
+            const nextTemp = `
+            <li><a href="https://github.com/${item.getGithub()}" target="blank_">${item.getGithub()}</a></li>
+             </ul>
+             </div>
+             </li>`;
+
+            fs.appendFileSync('./dist/team-profile.html', nextTemp);
+        }
+        else if (item.getRole() === `Intern`) {
+            const nextTemp = `
+            <li><h5>School: ${item.getSchool()}</h5></li>
+             </ul>
+             </div>
+             </li>`;
+
+            fs.appendFileSync('./dist/team-profile.html', nextTemp);
+        }
+    });
+}
+
+function addBottom(){
+    fs.appendFileSync('./dist/team-profile.html', htmlBottom);
+    return console.log(`Webpage created!`);
+};
+
+function finishHtml() {
+    generateCards();
+    addBottom();
+};
+
+function makeAnother() {
+    let newEmployee = {};
+    inquirer
+        .prompt(newEmployeeQs)
+        .then((response) => {
+            newEmployee = new Employee(response.name, response.id, response.email);
+            if (response.role === `Manager`) {
+                inquirer
+                    .prompt({
+                        type: `input`,
+                        message: `What's the manager's office number?`,
+                        name: `office`,
+                    })
+                    .then((detail) => {
+                        const newManager = new Manager(newEmployee.name, newEmployee.id, newEmployee.email, detail.office)
+                        employees.push(newManager)
+                        askNext();
+                    })
+            }
+            else if (response.role === `Engineer`) {
+                inquirer
+                    .prompt({
+                        type: `input`,
+                        message: `What's the engineer's Github account?`,
+                        name: `github`,
+                    })
+                    .then((detail) => {
+                        const newEngineer = new Engineer(newEmployee.name, newEmployee.id, newEmployee.email, detail.github)
+                        employees.push(newEngineer)
+                        askNext();
+                    })
+            }
+            else if (response.role === `Intern`) {
+                inquirer
+                    .prompt({
+                        type: `input`,
+                        message: `What school does the intern go to?`,
+                        name: `school`,
+                    })
+                    .then((detail) => {
+                        const newIntern = new Intern(newEmployee.name, newEmployee.id, newEmployee.email, detail.school)
+                        employees.push(newIntern)
+                        askNext();
+                    })
+            }
+        })
 };
 
 const nextQ = {
@@ -151,18 +213,13 @@ const nextQ = {
 };
 
 function init() {
-    fs.writeFile(`./dist/team-profile.html`, htmlTop, (err) =>
-        {if (err) {console.log(err)}} 
+    fs.writeFile(`./dist/team-profile.html`, htmlTop, (err) => { if (err) { console.log(err) } }
     );
-    fs.writeFile(`./dist/style.css`, cssTemplate, (err) =>
-        {if (err) {console.log(err)}} 
+    fs.writeFile(`./dist/style.css`, cssTemplate, (err) => { if (err) { console.log(err) } }
     );
-    inquirer
-        .prompt(newEmployeeQs)
-        .then((response) => {
-           genDetails(response);
-        }
-        )
-    }
 
-    init();
+    makeAnother();
+
+}
+
+init();
