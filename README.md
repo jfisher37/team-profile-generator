@@ -19,6 +19,10 @@ You can clone this project from it's Github page: https://github.com/jfisher37/t
 ## Usage
 Simply answer the prompts in the command line.
 
+Please find a walkthrough video for the app below: 
+
+https://drive.google.com/file/d/1Gw6JMsksJIDCHCWKt0GXyFREqjXEqrXs/view?usp=sharing
+
 ## License
 This project is covered by a MIT license.
 
